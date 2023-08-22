@@ -1,0 +1,10 @@
+{
+  "name": "cruelQualities-Editor",
+  "references": [
+    "cruelQualities"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}
