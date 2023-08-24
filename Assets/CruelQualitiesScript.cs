@@ -11,12 +11,15 @@ public class CruelQualitiesScript : MonoBehaviour
 #pragma warning disable 0108
     public KMAudio audio;
 #pragma warning restore 0108
+    public KMColorblindMode colorblindMode;
 
     public KMSelectable chordButton;
     public KMSelectable selectButton;
     public KMSelectable submitButton;
     public KMSelectable octaveButton;
     public GameObject octaveArrow;
+
+    public TextMesh[] colorblindTexts;
 
     public TextMesh binaryNumber;
     private int chosenBinaryNumber;
@@ -184,6 +187,8 @@ public class CruelQualitiesScript : MonoBehaviour
         {
             arrows[i].text = "";
             lights[i].SetActive(false);
+
+            colorblindTexts[i].GetComponent<Renderer>().enabled = false;
         }
 
         chosenBinaryNumber = Random.Range(0, 5) % 2;
@@ -257,7 +262,7 @@ public class CruelQualitiesScript : MonoBehaviour
             int shouldPlace = Random.Range(0, 3);
             if ((arrows[i].color == new Color(1f, 1f, 0, 1f)) && (shouldPlace == 0))
             {
-                arrows[i].color = new Color(0.5f, 0f, 0.5f, 1f);
+                arrows[i].color = new Color(0.5f, 0, 0.5f, 1f);
                 isPurpleSpawned = true;
                 if (i == chosenRoot) isPurpleRoot = true;
 
@@ -325,6 +330,56 @@ public class CruelQualitiesScript : MonoBehaviour
                 arrows[i].color = new Color(1f, 0, 0, 1f);
 
                 break;
+            }
+        }
+
+        // spawning colorblind
+        if(colorblindMode.ColorblindModeActive == true)
+        {
+            for(int i = 0; i < arrows.Length; i++)
+            {
+                if (arrows[i].text == "▲")
+                {
+                    colorblindTexts[i].GetComponent<Renderer>().enabled = true;
+
+                    // colors:
+                    Color yellow = new Color(1f, 1f, 0, 1f);
+                    Color green = new Color(0, 1f, 0, 1f);
+                    Color cyan = new Color(0, 1f, 1f, 1f);
+                    Color red = new Color(1f, 0, 0, 1f);
+                    Color purple = new Color(0.502f, 0, 0.502f, 1f);
+                    Color orange = new Color(1f, (165f/255f), 0, 1f);
+                    Color gray = new Color(0.502f, 0.502f, 0.502f, 1f);
+
+                    if (arrows[i].color == yellow)
+                    {
+                        colorblindTexts[i].text = "Y";
+                    }
+                    else if (arrows[i].color == green)
+                    {
+                        colorblindTexts[i].text = "G";
+                    }
+                    else if (arrows[i].color == cyan)
+                    {
+                        colorblindTexts[i].text = "C";
+                    }
+                    else if (arrows[i].color == red)
+                    {
+                        colorblindTexts[i].text = "R";
+                    }
+                    else if ((Mathf.Abs(arrows[i].color.r - purple.r) <= 0.1f) && (Mathf.Abs(arrows[i].color.g - purple.g) <= 0.1f) && (Mathf.Abs(arrows[i].color.b - purple.b) <= 0.1f))
+                    {
+                        colorblindTexts[i].text = "P";
+                    }
+                    else if (arrows[i].color == orange)
+                    {
+                        colorblindTexts[i].text = "O";
+                    }
+                    else if ((Mathf.Abs(arrows[i].color.r - gray.r) <= 0.1f) && (Mathf.Abs(arrows[i].color.g - gray.g) <= 0.1f) && (Mathf.Abs(arrows[i].color.b - gray.b) <= 0.1f))
+                    {
+                        colorblindTexts[i].text = "A";
+                    } else { Debug.Log($"Arrows is {arrows[i].color} and color gray is {gray}"); }
+                }
             }
         }
 
@@ -668,15 +723,16 @@ public class CruelQualitiesScript : MonoBehaviour
 
     // twitch plays
 
+    public bool TPColorblind = false;
 #pragma warning disable 0414
-    readonly private string TwitchHelpMessage = "Use \"!{0} rotate [amount]\" to rotate the wheel clockwise some amount of times (the default is 1). Use \"!{0} select\" to press the select button. Use \"!{0} octave\" to press the octave button. Use \"!{0} submit\" to submit your solution. Use \"!{0} sequence [sequnce]\", to submit an entire sequence. Ex. \"!{0} sequence octave select rotate rotate rotate select submit\".";
+    readonly private string TwitchHelpMessage = "Use \"!{0} rotate [amount]\" to rotate the wheel clockwise some amount of times (the default is 1). Use \"!{0} select\" to press the select button. Use \"!{0} octave\" to press the octave button. Use \"!{0} submit\" to submit your solution. Use \"!{0} sequence [sequnce]\", to submit an entire sequence. Ex. \"!{0} sequence octave select rotate rotate rotate select submit\". Toggle colorblind mode using \"!{0} colorblind\".";
 #pragma warning restore 0414
 
     private IEnumerator ProcessTwitchCommand(string command)
     {
         command = command.ToLowerInvariant();
 
-        if(command.StartsWith("rotate"))
+        if (command.StartsWith("rotate"))
         {
             string editedRotate = command.Remove(0, 6);
             bool invalid = false;
@@ -708,22 +764,22 @@ public class CruelQualitiesScript : MonoBehaviour
                 chordButton.OnInteract();
             }
         }
-        else if(command.StartsWith("select"))
+        else if (command.StartsWith("select"))
         {
             yield return null;
             selectButton.OnInteract();
         }
-        else if(command.StartsWith("submit"))
+        else if (command.StartsWith("submit"))
         {
             yield return null;
             submitButton.OnInteract();
         }
-        else if(command.StartsWith("octave"))
+        else if (command.StartsWith("octave"))
         {
             yield return null;
             octaveButton.OnInteract();
         }
-        else if(command.StartsWith("sequence"))
+        else if (command.StartsWith("sequence"))
         {
             if (command.Remove(0, 8).Length == 0)
             {
@@ -775,6 +831,74 @@ public class CruelQualitiesScript : MonoBehaviour
                     Debug.Log(editedSequence);
                 }
             }
+        }
+        else if (command.StartsWith("colorblind"))
+        {
+            yield return null;
+            ToggleColorblind();
+        }
+    }
+
+    private void ToggleColorblind()
+    {
+        if(TPColorblind == false)
+        {
+            for (int i = 0; i < arrows.Length; i++)
+            {
+                if (arrows[i].text == "▲")
+                {
+                    colorblindTexts[i].GetComponent<Renderer>().enabled = true;
+
+                    // colors:
+                    Color yellow = new Color(1f, 1f, 0, 1f);
+                    Color green = new Color(0, 1f, 0, 1f);
+                    Color cyan = new Color(0, 1f, 1f, 1f);
+                    Color red = new Color(1f, 0, 0, 1f);
+                    Color purple = new Color(0.502f, 0, 0.502f, 1f);
+                    Color orange = new Color(1f, (165f / 255f), 0, 1f);
+                    Color gray = new Color(0.502f, 0.502f, 0.502f, 1f);
+
+                    if (arrows[i].color == yellow)
+                    {
+                        colorblindTexts[i].text = "Y";
+                    }
+                    else if (arrows[i].color == green)
+                    {
+                        colorblindTexts[i].text = "G";
+                    }
+                    else if (arrows[i].color == cyan)
+                    {
+                        colorblindTexts[i].text = "C";
+                    }
+                    else if (arrows[i].color == red)
+                    {
+                        colorblindTexts[i].text = "R";
+                    }
+                    else if ((Mathf.Abs(arrows[i].color.r - purple.r) <= 0.1f) && (Mathf.Abs(arrows[i].color.g - purple.g) <= 0.1f) && (Mathf.Abs(arrows[i].color.b - purple.b) <= 0.1f))
+                    {
+                        colorblindTexts[i].text = "P";
+                    }
+                    else if (arrows[i].color == orange)
+                    {
+                        colorblindTexts[i].text = "O";
+                    }
+                    else if ((Mathf.Abs(arrows[i].color.r - gray.r) <= 0.1f) && (Mathf.Abs(arrows[i].color.g - gray.g) <= 0.1f) && (Mathf.Abs(arrows[i].color.b - gray.b) <= 0.1f))
+                    {
+                        colorblindTexts[i].text = "A";
+                    }
+                    else { Debug.Log($"Arrows is {arrows[i].color} and color gray is {gray}"); }
+                }
+            }
+
+            TPColorblind = true;
+        } else
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                colorblindTexts[i].GetComponent<Renderer>().enabled = false;
+            }
+
+            TPColorblind = false;
         }
     }
 }
