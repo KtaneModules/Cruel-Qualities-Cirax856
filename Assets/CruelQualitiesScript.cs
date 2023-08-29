@@ -299,7 +299,7 @@ public class CruelQualitiesScript : MonoBehaviour
                 }
                 else
                 {
-                    if(((bombInfo.GetSerialNumberNumbers().Last() % 2) == 0) && (arrows[i].color == new Color(0, 1f, 0, 1f)))
+                    if(((bombInfo.GetSerialNumberNumbers().Last() % 2) == 1) && (arrows[i].color == new Color(0, 1f, 0, 1f)))
                     {
                         arrows[i].text = "▲";
                         arrows[i].color = new Color(0.5f, 0.5f, 0.5f, 1f);
@@ -900,5 +900,67 @@ public class CruelQualitiesScript : MonoBehaviour
 
             TPColorblind = false;
         }
+    }
+
+    private IEnumerator TwitchHandleForcedSolve()
+    {
+        for(int i = 0; i < lights.Length; i++)
+        {
+            lights[i].SetActive(false);
+        }
+
+        if (isOctaveUp) octaveButton.OnInteract();
+
+        for(int i = 0; i < currentLight; i++)
+        {
+            chordButton.OnInteract();
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        if(isPurpleSpawned && isPurpleRoot)
+        {
+            for (int i = 0; i < nextArrow(solutionRoot); i++)
+            {
+                chordButton.OnInteract();
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
+        else if(isPurpleSpawned)
+        {
+            for (int i = 0; i < previousArrow(solutionRoot); i++)
+            {
+                chordButton.OnInteract();
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < solutionRoot; i++)
+            {
+                chordButton.OnInteract();
+                yield return new WaitForSeconds(0.05f);
+            }
+        }
+
+        for(int j = 0; j < solutionNotes.Length; j++)
+        {
+            for (int i = 0; i < solutionChordDistances[j]; i++)
+            {
+                chordButton.OnInteract();
+                yield return new WaitForSeconds(0.05f);
+            }
+
+            if ((chordsColors[solutionChord][j] == 'g' && !isOctaveUp) || (chordsColors[solutionChord][j] == 'y' && isOctaveUp))
+            {
+                octaveButton.OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            selectButton.OnInteract();
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        submitButton.OnInteract();
     }
 }
