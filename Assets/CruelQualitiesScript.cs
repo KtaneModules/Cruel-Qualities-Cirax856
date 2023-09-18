@@ -725,7 +725,7 @@ public class CruelQualitiesScript : MonoBehaviour
 
     public bool TPColorblind = false;
 #pragma warning disable 0414
-    readonly private string TwitchHelpMessage = "Use \"!{0} rotate [amount]\" to rotate the wheel clockwise some amount of times (the default is 1). Use \"!{0} select\" to press the select button. Use \"!{0} octave\" to press the octave button. Use \"!{0} submit\" to submit your solution. Use \"!{0} sequence [sequnce]\", to submit an entire sequence. Ex. \"!{0} sequence octave select rotate rotate rotate select submit\". Toggle colorblind mode using \"!{0} colorblind\".";
+    readonly private string TwitchHelpMessage = "Use \"!{0} rotate [amount]\" to rotate the wheel clockwise some amount of times (the default is 1). Use \"!{0} select\" to press the select button. Use \"!{0} octave\" to press the octave button. Use \"!{0} submit\" to submit your solution. Use \"!{0} sequence [sequence]\", to submit an entire sequence. Ex. \"!{0} sequence octave select rotate rotate rotate select submit\". Toggle colorblind mode using \"!{0} colorblind\".";
 #pragma warning restore 0414
 
     private IEnumerator ProcessTwitchCommand(string command)
