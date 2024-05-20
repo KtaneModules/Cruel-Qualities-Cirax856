@@ -84,7 +84,7 @@ public class CruelQualitiesScript : MonoBehaviour
         "LO",
         "M",
         "P",
-        "A",
+        "AL",
         "F",
         "T",
         "S",
@@ -114,7 +114,7 @@ public class CruelQualitiesScript : MonoBehaviour
         new int[] {1, 2, 2, 1, 2, 2, 2}, // LO
         new int[] {2, 2, 2, 3, 1, 2}, // M
         new int[] {2, 1, 3, 2, 1, 3}, // P
-        new int[] {2, 1, 2, 1, 2, 1, 2, 1}, // A
+        new int[] {2, 1, 2, 1, 2, 1, 3}, // AL
         new int[] {4, 4, 1, 2, 1}, // F
         new int[] {3, 3, 4, 2}, // T
         new int[] {3, 1, 2, 1, 3, 1, 1}, // S
@@ -144,21 +144,15 @@ public class CruelQualitiesScript : MonoBehaviour
         "ygygygy", // LO
         "yygygy", // M
         "ygyyyy", // P
-        "ygygygyg", // A
+        "ygygygy", // AL
         "ygygy", // F
         "ygyy", // T
-        "ygygygy", // 
-        "yyyygy" // 
+        "ygygygy", // S
+        "yyyygy" // AS
     };
 
     private bool isPurpleSpawned = false;
     private bool isPurpleRoot = false;
-
-    private int chosenNote1;
-    private int chosenNote2;
-    private int chosenNote3;
-    private int chosenNote4;
-    private int chosenNote5;
 
     private int currentLight = 0;
 
